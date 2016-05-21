@@ -1,0 +1,46 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/"><?=c('site_name')?></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <?php if($loginStatus):;?>
+      <ul class="nav navbar-nav">
+         <li<?php if( g('a') == 'index' ): ?> class="active"<?php endif; ?>><a href="?a=index">菜谱</a></li>
+         <li<?php if( g('a') == 'eat' ): ?> class="active"<?php endif; ?>><a href="javascript:;" id='selEat'>点餐</a></li>
+         <li<?php if( g('a') == 'my' ): ?> class="active"<?php endif; ?>><a href="?a=my">我</a></li> 
+         <?php if($isAdmin): ?>
+         <li<?php if( g('a') == 'admin' ): ?> class="active"<?php endif; ?>><a href="?a=admin">管理员权限</a></li> 
+         <?php endif;?> 
+      </ul>
+      <?php endif;?>
+      <ul class="nav navbar-nav navbar-right">
+      <?php 
+          if($loginStatus):;
+          $userInfo = json_decode($userInfo, true);
+      ?>
+        <li>
+            <a href="?a=my"><?php echo $userInfo['name'];?></a>
+        </li>
+        <li>
+            <a href = '<?php echo HTTP_HOST;?>?a=loginout' title = '退出'>退出</a>
+        </li>
+      <?php else:; ?>
+        <li>
+            <a href = '<?php echo HTTP_HOST;?>?a=login' rel = 'facebox' class = 'ajaxPage' title = '登录'>登录</a>
+        </li>
+        <li>
+            <a href = '<?php echo HTTP_HOST;?>?a=register' rel = 'facebox' class = 'ajaxPage' title = '注册'>注册</a>
+        </li>
+      <?php endif;?>
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>

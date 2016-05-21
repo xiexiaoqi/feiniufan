@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+    <title><?=$top_title . ' | ' . c('site_name') ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="qc:admins" content="47545471516156166316110063757" />
+    <link href="static/css/bootstrap.min.3.3.5.css?<?php echo c('static_v'); ?>" rel="stylesheet">
+    <style type="text/css">
+     body 
+{
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+
+.sidebar-nav 
+{
+	padding: 9px 0;
+}
+</style>
+<link rel="stylesheet" href="<?php echo STATIC_HOST; ?>/static/css/style.css?<?php echo c('static_v'); ?>" type="text/css" >
+<link rel="stylesheet" href="<?php echo STATIC_HOST; ?>/static/css/facebox.css?<?php echo c('static_v'); ?>" type="text/css" >
+<?php if( isset($css) && is_array( $css ) ): ?>
+        <?php foreach( $css as $cfile ): ?><link rel="stylesheet" type="text/css" href="<?php echo STATIC_HOST; ?>/static/css/<?=$cfile?>?<?php echo c('static_v'); ?>">
+        <?php endforeach; ?>
+<?php endif; ?>
+
+<!--[if lt IE 9]>
+      <script src="static/script/html5.js"></script>
+<![endif]-->
+<!--[if IE 6]>    
+    		<link href="static/css/ie6.min.css" rel="stylesheet">
+<![endif]-->
+<script type="text/javascript">
+HTTP_HOST = '<?php echo HTTP_HOST; ?>';
+STATIC_HOST='<?php echo STATIC_HOST; ?>';
+
+</script>
+</head>    
+<body>
+
+
+
+<?php @include_once( dirname(__FILE__) ) . DS . 'header.tpl.html'; ?>
+<br />
+<div id = 'eatTable'>
+  <div class="input-group">
+      <form method = 'post' id = 'eatForm' action='<?php echo HTTP_HOST; ?>/?a=eat'>
+        <input type="text" class="form-control" id="eatItem" name ='eatItem' placeholder="吃啥">
+        <input type="text" class="form-control" id="eatPrice" name = 'eatPrice' placeholder="多少钱">
+        <button type="button" class="btn btn-default" id='eatSelOk'>好了</button>
+      </form>
+  </div>
+</div>
+<iframe width = '100%' height = '900px' src="<?php echo $menu['link']?>"></iframe>
+
+ 
+    <div class="container">
+
+     <?php @include_once( dirname(__FILE__) ) . DS . 'footer.tpl.html'; ?>
+     
+    </div><!--/.fluid-container-->
+    
+<script src="<?php echo STATIC_HOST;?>/static/script/jquery1.9.1.min.js?<?php echo c('static_v'); ?>"></script>
+<script src="<?php echo STATIC_HOST;?>/static/script/bootstrap.min.3.3.5.js?<?php echo c('static_v'); ?>"></script>
+<!--[if IE 6]>    
+		 <script src="<?php echo STATIC_HOST;?>/static/script/ie6.min.js"></script>
+<![endif]-->
+<script src="<?php echo STATIC_HOST;?>/static/script/facebox.js?<?php echo c('static_v'); ?>"></script>
+<script src="<?php echo STATIC_HOST;?>/static/script/app.js?<?php echo c('static_v'); ?>"></script>
+
+<?php if( isset($js) && is_array( $js ) ): ?>
+    <?php foreach( $js as $jfile ): ?><script type="text/javascript" src="static/script/<?=$jfile;?>?<?php echo c('static_v'); ?>" ></script>
+    <?php endforeach; ?>
+<?php endif; ?>
+</body>
+</html>
+<script>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+    <title><?=$top_title . ' | ' . c('site_name') ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="qc:admins" content="47545471516156166316110063757" />
+    <link href="<?php echo STATIC_HOST; ?>/static/css/bootstrap.min.3.3.5.css?<?php echo c('static_v'); ?>" rel="stylesheet">
+    <style type="text/css">
+     body 
+{
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+
+.sidebar-nav 
+{
+	padding: 9px 0;
+}
+</style>
+<link rel="stylesheet" href="<?php echo STATIC_HOST; ?>/static/css/style.css?<?php echo c('static_v'); ?>" type="text/css" >
+<link rel="stylesheet" href="<?php echo STATIC_HOST; ?>/static/css/facebox.css?<?php echo c('static_v'); ?>" type="text/css" >
+<?php if( isset($css) && is_array( $css ) ): ?>
+        <?php foreach( $css as $cfile ): ?><link rel="stylesheet" type="text/css" href="<?php echo STATIC_HOST; ?>/static/css/<?=$cfile?>?<?php echo c('static_v'); ?>">
+        <?php endforeach; ?>
+<?php endif; ?>
+
+<!--[if lt IE 9]>
+      <script src="static/script/html5.js"></script>
+<![endif]-->
+<!--[if IE 6]>    
+    		<link href="static/css/ie6.min.css" rel="stylesheet">
+<![endif]-->
+<script type="text/javascript">
+HTTP_HOST = '<?php echo HTTP_HOST; ?>';
+STATIC_HOST='<?php echo STATIC_HOST; ?>';
+
+</script>
+</head>    
+<body>
+
+<?php @include_once( dirname(__FILE__) ) . DS . '../header.tpl.html'; ?>
+<br />
+<div id = 'eatTable'>
+  <div class="input-group">
+      <form method = 'post' id = 'eatForm' action='<?php echo HTTP_HOST; ?>/?a=eat'>
+        <input type="text" class="form-control" id="eatItem" name ='eatItem' placeholder="吃啥">
+        <input type="text" class="form-control" id="eatPrice" name = 'eatPrice' placeholder="多少钱">
+        <button type="button" class="btn btn-default" id='eatSelOk'>好了</button>
+      </form>
+  </div>
+</div>
+<div class="container">
+
+
+<?php if($isAdmin):;?>
+<div class="panel panel-default">
+  <div class="panel-heading">管理员权限: 总站可用金额(<?php echo $allBalance; ?>)</div>
+  <div class="panel-body">
+    <p class = 'clearBoth'></p>
+
+    <ul class="nav nav-tabs">
+      <?php
+      $adminActiveCount = 0;
+      foreach ($getAllRecord as $key => $value):;
+          $active = $adminActiveCount > 0 ? '' : 'active';
+      ?>
+      <li role="presentation" class="balanceBar <?php echo $active;?>" id = 'adminBalance_<?php echo $adminActiveCount;?>'>
+        <a href="javascript:;"><?php echo $key;?></a>
+      </li>
+      <?php $adminActiveCount++;endforeach;?>
+    </ul>
+    <?php 
+    $adminActBalanceCount = 0;
+    foreach ($getAllRecord as $balanceName => $balanceRecord):;
+        $hide = $adminActBalanceCount > 0 ? 'hide' : '';
+    ?>
+    <div class = 'adminBalance_<?php echo $adminActBalanceCount.' '.$hide;?> balanceInfoDiv'>
+      <table class="table table-bordered table-striped balanceInfoTable">
+        <colgroup>
+          <col class="col-xs-1">
+          <col class="col-xs-7">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>金额</th>
+            <th>状态</th>
+            <th>时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($balanceRecord as $bk => $bv):;?>
+          <tr>
+            <td>￥<?php echo $bv['point'];?></td>
+            <td>
+            <?php 
+
+            if($bv['status'] == 1) {
+              echo '已激活';
+            } else {
+              $id = $bv['id'];
+              echo "未激活&nbsp&nbsp&nbsp&nbsp<a data-id = '{$id}' href = 'javascript:;'' class = 'balanceAct'>激活</a>";
+            }
+
+            ?>
+
+            </td>
+            <td><?php echo date('Y/m/d H:i:s',$bv['insert_date']);?></td>
+          </tr>
+          <?php endforeach;?>
+        </tbody>
+      </table>
+    </div>
+    <?php $adminActBalanceCount++;endforeach;?>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">订馆子</div>
+  <div class="panel-body">
+    <form class="form-inline" id = 'admAddMenu' action = '/?c=fun&a=addMenu'>
+      <input type="text" name = 'menuName' class="form-control" placeholder="名字">
+      <input type="text" name = 'menuLink' class="form-control" placeholder="链接">
+      <button type="button" class="btn btn-default ajaxForm">好了</button>
+    </form>
+    <div class="row">
+      <?php foreach($menus as $menu):;?>
+      <div class="col-md-3">
+        <a href = "<?php echo $menu['link'];?>" class = 'width150'><?php echo $menu['name'];?></a>
+        <button class = 'floatR setMenu' data-id = "<?php echo $menu['id'];?>">就它</button>
+      </div>
+      <?php endforeach;?>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">返利</div>
+  <div class="panel-body">
+      <form action = '/?c=fun&a=admBalance' id='admBalanceRebate' >
+        <select class="form-control width100 floatL" name='type'>
+          <option value = 'rebate'>rebate</option>
+          <option value = 'refund'>refund</option>
+        </select>
+        <div class="input-group width150">
+          <input type="text" name='amount' class="form-control" placeholder="返多少">
+          <span class="input-group-btn">
+            <button class="btn btn-default ajaxForm" id = 'addRebateBt' type="button">返利!</button>
+          </span>
+        </div>
+
+        <div>
+          <br />
+          <div class="row">
+          <?php foreach($allUser as $uk => $user):;?>
+            <div class="col-md-1">
+              <label class="checkbox-inline labDiv">
+                <input type="checkbox" name='u_ids[<?php echo $uk;?>]' value="<?php echo $user['id'];?>"> <?php echo $user['nick_name'];?>
+              </label>
+            </div>
+          <?php endforeach;?>
+          </div>
+        </div>
+      </form>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">点饭列表</div>
+  <div class="panel-body">
+      <?php foreach ($consumesRecord as $cDate => $consumeRecord):;?>
+      <h3><?php echo $cDate; ?></h3>
+      <table class="table table-bordered table-striped">
+        <colgroup>
+          <col class="col-xs-1">
+          <col class="col-xs-7">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>用户&nbsp(<?php echo count($consumeRecord);?>)</th>
+            <th>菜(价格)</th>
+            <th>时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($consumeRecord as $ck => $consume):;?>
+          <tr>
+            <td><?php echo $consume['userInfo']['nick_name'];?></td>
+            <td><?php echo $consume['name']."(￥{$consume['amount']})";?></td>
+            <td><?php echo date('Y/m/d H:i:s',$consume['insert_date']);?></td>
+            <td><a href = 'javascript:;'>删除</a></td>
+          </tr>
+          <?php endforeach;?>
+        </tbody>
+      </table>
+      <?php endforeach;?>
+  </div>
+</div>
+
+<?php endif;?>
+
+
+<?php @include_once( dirname(__FILE__) ) . DS . '../footer.tpl.html'; ?>
+
+</div><!--/.fluid-container-->
+    
+<script src="<?php echo STATIC_HOST;?>/static/script/jquery1.9.1.min.js?<?php echo c('static_v'); ?>"></script>
+<script src="<?php echo STATIC_HOST;?>/static/script/bootstrap.min.3.3.5.js?<?php echo c('static_v'); ?>"></script>
+<!--[if IE 6]>    
+		 <script src="<?php echo STATIC_HOST;?>/static/script/ie6.min.js"></script>
+<![endif]-->
+<script src="<?php echo STATIC_HOST;?>/static/script/facebox.js?<?php echo c('static_v'); ?>"></script>
+<script src="<?php echo STATIC_HOST;?>/static/script/app.js?<?php echo c('static_v'); ?>"></script>
+
+<?php if( isset($js) && is_array( $js ) ): ?>
+    <?php foreach( $js as $jfile ): ?><script type="text/javascript" src="static/script/<?=$jfile;?>?<?php echo c('static_v'); ?>" ></script>
+    <?php endforeach; ?>
+<?php endif; ?>
+</body>
+</html>
+<script>
