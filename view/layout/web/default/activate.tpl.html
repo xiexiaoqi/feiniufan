@@ -54,92 +54,67 @@ STATIC_HOST='<?php echo STATIC_HOST; ?>';
 
 
 <?php if($isAdmin):;?>
-
 <div class="panel panel-default">
-  <div class="panel-heading">订馆子</div>
+  <div class="panel-heading">管理员权限: 总站可用金额(<?php echo $allBalance; ?>)</div>
   <div class="panel-body">
-    <form class="form-inline" id = 'admAddMenu' action = '/?c=fun&a=addMenu'>
-      <input type="text" name = 'menuName' class="form-control" placeholder="名字">
-      <input type="text" name = 'menuLink' class="form-control" placeholder="链接">
-      <button type="button" class="btn btn-default ajaxForm">好了</button>
-    </form>
-    <div class="row">
-      <?php foreach($menus as $menu):;?>
-      <div class="col-md-3">
-        <a href = "<?php echo $menu['link'];?>" class = 'width150'><?php echo $menu['name'];?></a>
-        <button class = 'floatR setMenu' data-id = "<?php echo $menu['id'];?>">就它</button>
-      </div>
-      <?php endforeach;?>
-    </div>
-  </div>
-</div>
+    <p class = 'clearBoth'></p>
 
-<div class="panel panel-default">
-  <div class="panel-heading">返利</div>
-  <div class="panel-body">
-      <form action = '/?c=fun&a=admBalance' id='admBalanceRebate' >
-        <select class="form-control width100 floatL" name='type'>
-          <option value = 'rebate'>rebate</option>
-          <option value = 'refund'>refund</option>
-        </select>
-        <div class="input-group width150">
-          <input type="text" name='amount' class="form-control" placeholder="返多少">
-          <span class="input-group-btn">
-            <button class="btn btn-default ajaxForm" id = 'addRebateBt' type="button">返利!</button>
-          </span>
-        </div>
-
-        <div>
-          <br />
-          <div class="row">
-          <?php foreach($allUser as $uk => $user):;?>
-            <div class="col-md-1">
-              <label class="checkbox-inline labDiv">
-                <input type="checkbox" name='u_ids[<?php echo $uk;?>]' value="<?php echo $user['id'];?>"> <?php echo $user['nick_name'];?>
-              </label>
-            </div>
-          <?php endforeach;?>
-          </div>
-        </div>
-      </form>
-  </div>
-</div>
-
-<div class="panel panel-default">
-  <div class="panel-heading">点饭列表</div>
-  <div class="panel-body">
-      <?php foreach ($consumesRecord as $cDate => $consumeRecord):;?>
-      <h3><?php echo $cDate; ?></h3>
-      <table class="table table-bordered table-striped">
+    <ul class="nav nav-tabs">
+      <?php
+      $adminActiveCount = 0;
+      foreach ($getAllRecord as $key => $value):;
+          $active = $adminActiveCount > 0 ? '' : 'active';
+      ?>
+      <li role="presentation" class="balanceBar <?php echo $active;?>" id = 'adminBalance_<?php echo $adminActiveCount;?>'>
+        <a href="javascript:;"><?php echo $key;?></a>
+      </li>
+      <?php $adminActiveCount++;endforeach;?>
+    </ul>
+    <?php 
+    $adminActBalanceCount = 0;
+    foreach ($getAllRecord as $balanceName => $balanceRecord):;
+        $hide = $adminActBalanceCount > 0 ? 'hide' : '';
+    ?>
+    <div class = 'adminBalance_<?php echo $adminActBalanceCount.' '.$hide;?> balanceInfoDiv'>
+      <table class="table table-bordered table-striped balanceInfoTable">
         <colgroup>
           <col class="col-xs-1">
           <col class="col-xs-7">
         </colgroup>
         <thead>
           <tr>
-            <th>用户&nbsp(<?php echo count($consumeRecord);?>)</th>
-            <th>菜(价格)</th>
+            <th>金额</th>
+            <th>状态</th>
             <th>时间</th>
-            <th>操作</th>
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($consumeRecord as $ck => $consume):;?>
+          <?php foreach ($balanceRecord as $bk => $bv):;?>
           <tr>
-            <td><?php echo $consume['userInfo']['nick_name'];?></td>
-            <td><?php echo $consume['name']."(￥{$consume['amount']})";?></td>
-            <td><?php echo date('Y/m/d H:i:s',$consume['insert_date']);?></td>
-            <td><a href = 'javascript:;'>删除</a></td>
+            <td>￥<?php echo $bv['point'];?></td>
+            <td>
+            <?php 
+
+            if($bv['status'] == 1) {
+              echo '已激活';
+            } else {
+              $id = $bv['id'];
+              echo "未激活&nbsp&nbsp&nbsp&nbsp<a data-id = '{$id}' href = 'javascript:;'' class = 'balanceAct'>激活</a>";
+            }
+
+            ?>
+
+            </td>
+            <td><?php echo date('Y/m/d H:i:s',$bv['insert_date']);?></td>
           </tr>
           <?php endforeach;?>
         </tbody>
       </table>
-      <?php endforeach;?>
+    </div>
+    <?php $adminActBalanceCount++;endforeach;?>
   </div>
 </div>
-
 <?php endif;?>
-
 
 <?php @include_once( dirname(__FILE__) ) . DS . '../footer.tpl.html'; ?>
 

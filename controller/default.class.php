@@ -155,10 +155,7 @@ class defaultController extends appController
 		$this->_data['title'] = $this->_data['top_title'] = '管理员权限';
 		$this->setUserInfo();
 		$userInfo = $this->_data['userInfo'];
-		//取出全部会员的充值记录
-		$getAllRecord = Model_balance::meta()->getAllRecord();
-		$this->_data['getAllRecord'] = $getAllRecord;
-
+		
 		$allUser = Model_member::meta()->getRecord([], 'id desc');
 		$this->_data['allUser'] = $allUser;
 
@@ -169,6 +166,22 @@ class defaultController extends appController
 		$this->_data['allBalance'] = Model_member::meta()->countBalance()['allBalance'];
 		$this->_data['loginStatus'] = true;
 		render( $this->_data, 'web', 'default/admin' );
+	}
+
+	/**
+	 * 激活充值
+	 */
+	function activate() {
+		if(!$this->_isAdmin) {
+			exit('error');
+		}
+		$this->_data['title'] = $this->_data['top_title'] = '激活充值';
+		//取出全部会员的充值记录
+		$getAllRecord = Model_balance::meta()->getAllRecord();
+		$this->_data['getAllRecord'] = $getAllRecord;
+		$this->_data['allBalance'] = Model_member::meta()->countBalance()['allBalance'];
+		$this->_data['loginStatus'] = true;
+		render( $this->_data, 'web', 'default/activate' );
 	}
 
 	/**
